@@ -1,0 +1,43 @@
+@baseUrl = http://localhost:3333
+
+@authToken = {{authentication.response.body.access_token}}
+
+# @name create_account
+POST {{baseUrl}}/accounts
+Content-Type: application/json
+
+{
+  "name": "Leliz Flavio",
+  "email": "lelizflavio@email.com",
+  "password": "123"
+}
+
+###
+
+# @name authentication
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+  "email": "example@email.com",
+  "password": "123"
+}
+
+###
+
+# @name create_question
+POST {{baseUrl}}/questions
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "example question title 2",
+  "content": "example question content"
+}
+
+###
+
+# @name fetch_recent_questions
+GET {{baseUrl}}/questions?page=1  
+Content-Type: application/json
+Authorization: Bearer {{authToken}}

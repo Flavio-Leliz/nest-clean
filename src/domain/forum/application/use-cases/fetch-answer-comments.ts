@@ -1,0 +1,38 @@
+import { Either, right } from '@/core/either'
+import { AnswerCommentsRepository } from '../repositories/answer-comments-repository'
+import { Injectable } from '@nestjs/common'
+import { CommentWithAuthor } from '../../enterprise/entities/value-object/comment-with-author'
+
+interface FetchAnswerCommentsUseCaseRequest {
+  answerId: string
+  page: number
+}
+
+type FetchAnswerCommentsUseCaseResponse = Either<
+  null,
+  {
+    comments: CommentWithAuthor[]
+  }
+>
+
+@Injectable()
+export class FetchAnswerCommentsUseCase {
+  constructor(private answerCommentRepository: AnswerCommentsRepository) {}
+
+  async execute({
+    answerId,
+    page,
+  }: FetchAnswerCommentsUseCaseRequest): Promise<FetchAnswerCommentsUseCaseResponse> {
+    const comments =
+      await this.answerCommentRepository.findManyByAnswerIdCommentsWithAuthor(
+        answerId,
+        {
+          page,
+        },
+      )
+
+    return right({
+      comments,
+    })
+  }
+}
